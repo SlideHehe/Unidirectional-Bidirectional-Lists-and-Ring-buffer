@@ -42,7 +42,7 @@ Ring_buf::Ring_buf(int size): max_size(size)
 void Ring_buf::push(int data)
 {
 	Node *new_node = new Node(data);
-	if(head == nullptr) 
+	if(!head) 
 	{
 		head = new_node;
 		tail = new_node;
@@ -132,7 +132,6 @@ void Ring_buf::delete_node(int index)
 {
 	Node *node = head->next;
 	Node *buf = head;
-	Node *buf2 = head;
 	if(index < 0)
 	{
 		cout << "The index can't be less than 0, so sorry. \n";

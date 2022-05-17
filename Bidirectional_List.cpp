@@ -33,12 +33,10 @@ Bidirectional_List::~Bidirectional_List() { delAll(); }
 
 void Bidirectional_List::print() {
     if (count > 0) {
-        Node *currNode = head;
-        int i = 0;
+        Iterator currNode(begin());
 
-        while (currNode != nullptr) {
-            cout << i++ << ") " << currNode->data << endl;
-            currNode = currNode->next;
+        for (int i = 0; i < count; i++, currNode++) {
+            cout << i << ") " << *currNode << endl;
         }
 
     } else cerr << "List is empty";

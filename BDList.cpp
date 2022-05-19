@@ -1,11 +1,11 @@
-#include "Bidirectional_List.h"
+#include "BDList.h"
 
-Bidirectional_List::Bidirectional_List() {
+BDList::BDList() {
     head = tail = nullptr;
     count = 0;
 }
 
-Bidirectional_List::Bidirectional_List(const Bidirectional_List &otherList) {
+BDList::BDList(const BDList &otherList) {
     head = tail = nullptr;
     count = 0;
 
@@ -29,9 +29,9 @@ Bidirectional_List::Bidirectional_List(const Bidirectional_List &otherList) {
     } else cerr << "List is empty";
 }
 
-Bidirectional_List::~Bidirectional_List() { delAll(); }
+BDList::~BDList() { delAll(); }
 
-void Bidirectional_List::print() {
+void BDList::print() {
     if (count > 0) {
         Node *currNode = head;
         int i = 0;
@@ -44,7 +44,7 @@ void Bidirectional_List::print() {
     } else cerr << "List is empty";
 }
 
-void Bidirectional_List::push(int data) {
+void BDList::push(int data) {
     Node *newNode = new Node();
     newNode->data = data;
     newNode->next = nullptr;
@@ -63,7 +63,7 @@ void Bidirectional_List::push(int data) {
 
 }
 
-void Bidirectional_List::insert(int data, int position) {
+void BDList::insert(int data, int position) {
     if (position <= count) {
         Node *newNode = new Node();
         newNode->data = data;
@@ -84,11 +84,26 @@ void Bidirectional_List::insert(int data, int position) {
 
             count++;
 
-        } else if (position > 0 && position < count) {
+        } else if (position > 0 && position <= count / 2) {
             int currPos = 0;
             Node *currNode;
 
             for (currNode = head; currNode != nullptr && currPos != position; currNode = currNode->next, currPos++);
+
+            if (currPos == position) {
+                newNode->prev = currNode->prev;
+                newNode->prev->next = newNode;
+                currNode->prev = newNode;
+                newNode->next = currNode;
+            }
+
+            count++;
+        } else if (position < count - 1 && position > count / 2) {
+            int currPos = count - 1;
+            Node *currNode;
+
+            for (currNode = tail; currNode != nullptr && currPos != position; currNode = currNode->prev, currPos--);
+
             if (currPos == position) {
                 newNode->prev = currNode->prev;
                 newNode->prev->next = newNode;
@@ -101,7 +116,7 @@ void Bidirectional_List::insert(int data, int position) {
     } else cerr << "Such position doesn't exist";
 }
 
-int Bidirectional_List::pop() {
+int BDList::pop() {
     if (count > 0) {
         Node *tmp = tail;
 
@@ -119,7 +134,7 @@ int Bidirectional_List::pop() {
     } else cerr << "List is empty";
 }
 
-int Bidirectional_List::erase(int position) {
+int BDList::erase(int position) {
     if (count > 0) {
         Node *tmp;
 
@@ -149,10 +164,22 @@ int Bidirectional_List::erase(int position) {
 
             delete tmp;
             count--;
-        } else if (position > 0 && position < count - 1) {
+        } else if (position > 0 && position <= count / 2) {
             int currPos = 0;
 
             for (tmp = head; tmp != nullptr && currPos != position; tmp = tmp->next, currPos++);
+
+            if (currPos == position) {
+                tmp->next->prev = tmp->prev;
+                tmp->prev->next = tmp->next;
+                delete tmp;
+            }
+
+            count--;
+        } else if (position < count - 1 && position > count / 2) {
+            int currPos = count - 1;
+
+            for (tmp = tail; tmp != nullptr && currPos != position; tmp = tmp->prev, currPos--);
 
             if (currPos == position) {
                 tmp->next->prev = tmp->prev;
@@ -165,7 +192,7 @@ int Bidirectional_List::erase(int position) {
     } else cerr << "List is empty";
 }
 
-void Bidirectional_List::delAll() {
+void BDList::delAll() {
     Node *tmp;
 
     while (head != nullptr) {
@@ -178,11 +205,11 @@ void Bidirectional_List::delAll() {
     count = 0;
 }
 
-Iterator Bidirectional_List::begin() const { return Iterator(head); }
+BDListIterator BDList::begin() const { return BDListIterator(head); }
 
-Iterator Bidirectional_List::end() const { return Iterator(tail); }
+BDListIterator BDList::end() const { return BDListIterator(tail); }
 
-int Bidirectional_List::getByHead(int position) const {
+int BDList::getByHead(int position) const {
     if (count > 0 && position < count && position >= 0) {
         Node *tmp;
         int currPos = 0;
@@ -196,7 +223,7 @@ int Bidirectional_List::getByHead(int position) const {
     return 0;
 }
 
-int Bidirectional_List::getByTail(int position) const {
+int BDList::getByTail(int position) const {
     if (count > 0 && position < count && position >= 0) {
         Node *tmp;
         int currPos = 0;
@@ -210,68 +237,68 @@ int Bidirectional_List::getByTail(int position) const {
     return 0;
 }
 
-int Bidirectional_List::getCount() const { return count; }
+int BDList::getCount() const { return count; }
 
-bool Bidirectional_List::operator==(const Bidirectional_List &otherList) const { return (count == otherList.count); }
+bool BDList::operator==(const BDList &otherList) const { return (count == otherList.count); }
 
-bool Bidirectional_List::operator!=(const Bidirectional_List &otherList) const { return (count != otherList.count); }
+bool BDList::operator!=(const BDList &otherList) const { return (count != otherList.count); }
 
-bool Bidirectional_List::operator>(const Bidirectional_List &otherList) const { return (count > otherList.count); }
+bool BDList::operator>(const BDList &otherList) const { return (count > otherList.count); }
 
-bool Bidirectional_List::operator>=(const Bidirectional_List &otherList) const { return (count >= otherList.count); }
+bool BDList::operator>=(const BDList &otherList) const { return (count >= otherList.count); }
 
-bool Bidirectional_List::operator<(const Bidirectional_List &otherList) const { return (count < otherList.count); }
+bool BDList::operator<(const BDList &otherList) const { return (count < otherList.count); }
 
-bool Bidirectional_List::operator<=(const Bidirectional_List &otherList) const { return (count <= otherList.count); }
+bool BDList::operator<=(const BDList &otherList) const { return (count <= otherList.count); }
 
-Iterator::Iterator() { currNode = nullptr; }
+BDListIterator::BDListIterator() { currNode = nullptr; }
 
-Iterator::Iterator(Bidirectional_List::Node *node) { currNode = node; }
+BDListIterator::BDListIterator(BDList::Node *node) { currNode = node; }
 
-Iterator::Iterator(const Iterator &otherIter) { currNode = otherIter.currNode; }
+BDListIterator::BDListIterator(const BDListIterator &otherIter) { currNode = otherIter.currNode; }
 
-Iterator &Iterator::operator++() {
+BDListIterator &BDListIterator::operator++() {
     if (currNode)
         currNode = currNode->next;
     return *this;
 }
 
-Iterator Iterator::operator++(int) {
-    Bidirectional_List::Node *oldNode = currNode;
+BDListIterator BDListIterator::operator++(int) {
+    BDList::Node *oldNode = currNode;
     if (currNode)
         currNode = currNode->next;
     return oldNode;
 }
 
-Iterator &Iterator::operator--() {
+BDListIterator &BDListIterator::operator--() {
     if (currNode)
         currNode = currNode->prev;
     return *this;
 }
 
-Iterator Iterator::operator--(int) {
-    Bidirectional_List::Node *oldNode = currNode;
+BDListIterator BDListIterator::operator--(int) {
+    BDList::Node *oldNode = currNode;
     if (currNode)
         currNode = currNode->prev;
     return oldNode;
 }
 
-Iterator &Iterator::operator=(const Iterator &otherIter) {
+BDListIterator &BDListIterator::operator=(const BDListIterator &otherIter) {
     if (this == &otherIter)
         return *this;
     currNode = otherIter.currNode;
     return *this;
 }
 
-int &Iterator::operator*() const { return currNode->data; }
+int &BDListIterator::operator*() const { return currNode->data; }
 
-int Iterator::operator->() const { return currNode->data; }
+int BDListIterator::operator->() const { return currNode->data; }
 
-bool Iterator::operator==(const Iterator &otherIter) const { return currNode == otherIter.currNode; }
+bool BDListIterator::operator==(const BDListIterator &otherIter) const { return currNode == otherIter.currNode; }
 
-bool Iterator::operator!=(const Iterator &otherIter) const { return currNode != otherIter.currNode; }
+bool BDListIterator::operator!=(const BDListIterator &otherIter) const { return currNode != otherIter.currNode; }
 
-Bidirectional_List::Node::Node() {
+BDList::Node::Node() {
     prev = next = nullptr;
     data = 0;
 }

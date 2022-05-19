@@ -1,6 +1,6 @@
 #include "Tests.h"
 
 int main() {
-    Bidirectional_list_test();
+    bdListTest();
     return 0;
 }

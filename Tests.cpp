@@ -1,38 +1,38 @@
 #include "Tests.h"
 
-void Bidirectional_list_test() {
-    Bidirectional_List test_list;
+void bdListTest() {
+    BDList testBDList;
     for (int i = 0; i < 15; i++)
-        test_list.push(i);
-    test_list.print();
-    cout << "Count: " << test_list.getCount() << endl;
+        testBDList.push(i);
 
-    test_list.insert(35, 5);
-    test_list.print();
-    cout << "Count: " << test_list.getCount() << endl;
+    cout << "Count: " << testBDList.getCount() << endl;
 
-    Iterator test_iterator(test_list.begin());
-    cout << "Current node: " << *test_iterator << endl;
-    test_iterator++;
-    cout << "Current node: " << *test_iterator << endl;
+    testBDList.insert(35, 5);
+    testBDList.print();
+    cout << "Count: " << testBDList.getCount() << endl;
 
-    test_iterator = test_list.end();
-    cout << "Current node: " << *test_iterator << endl;
-    test_iterator--;
-    cout << "Current node: " << *test_iterator << endl;
+    BDListIterator testBDListIterator(testBDList.begin());
+    cout << "Current node: " << *testBDListIterator << endl;
+    testBDListIterator++;
+    cout << "Current node: " << *testBDListIterator << endl;
+
+    testBDListIterator = testBDList.end();
+    cout << "Current node: " << *testBDListIterator << endl;
+    testBDListIterator--;
+    cout << "Current node: " << *testBDListIterator << endl;
 
     for (int i = 0; i < 5; i++)
-        test_list.pop();
-    test_list.print();
-    cout << "Count: " << test_list.getCount() << endl;
+        testBDList.pop();
+    testBDList.print();
+    cout << "Count: " << testBDList.getCount() << endl;
 
-    test_list.erase(3);
-    test_list.print();
-    cout << "Count: " << test_list.getCount() << endl;
+    testBDList.erase(3);
+    testBDList.print();
+    cout << "Count: " << testBDList.getCount() << endl;
 
-    cout << "Get by head by 3: " << test_list.getByHead(3) << endl;
-    cout << "Get by tail by 3: " << test_list.getByTail(3) << endl;
+    cout << "Get by head by 3: " << testBDList.getByHead(3) << endl;
+    cout << "Get by tail by 3: " << testBDList.getByTail(3) << endl;
 
-    test_list.delAll();
-    test_list.print();
+    testBDList.delAll();
+    testBDList.print();
 }

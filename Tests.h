@@ -1,8 +1,8 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-#include "Bidirectional_List.h"
+#include "BDList.h"
 
-void Bidirectional_list_test();
+void bdListTest();
 
 #endif //TESTS_H

@@ -7,16 +7,20 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-struct Node
-{
-	int data;
-	Node* next;
-	Node(int);
-};
+class Iterator;
 
 class Ring_buf 
 {
+
 private:
+
+	struct Node
+	{
+		int data;
+		Node* next;
+		Node(int);
+	};
+
 	Node *head;
 	Node *tail;
 	int current_size;
@@ -26,6 +30,8 @@ private:
 
 	bool overflow();
 public:
+	friend class Iterator;
+
 	Ring_buf(int );
 
 	void push(int );
@@ -34,9 +40,9 @@ public:
 
 	void insert(int , int );
 
-	Node* begin() const;
+	Iterator begin() const;
 
-	Node* end() const;
+	Iterator end() const;
 
 
 	void delete_node(int );
@@ -61,6 +67,34 @@ public:
 
 	~Ring_buf();
 
+};
+
+class Iterator {
+public:
+    friend struct Ring_buf::Node;
+
+    Iterator();
+
+    Iterator(Ring_buf::Node*);
+
+    Iterator(const Iterator&);
+
+    Iterator &operator++();
+
+    Iterator operator++(int);
+
+    Iterator &operator=(const Iterator&);
+
+    int &operator*() const;
+
+    int operator->() const;
+
+    bool operator==(const Iterator&) const;
+
+    bool operator!=(const Iterator&) const;
+
+private:
+    Ring_buf::Node *currNode;
 };
 
 

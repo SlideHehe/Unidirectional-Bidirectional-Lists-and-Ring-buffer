@@ -1,7 +1,7 @@
 #include "Ring_buf.h"
 
 
-Node::Node(int data)
+Ring_buf::Node::Node(int data)
 {
 	this->data = data;
 	next = nullptr;
@@ -42,7 +42,7 @@ Ring_buf::Ring_buf(int size): max_size(size)
 void Ring_buf::push(int data)
 {
 	Node *new_node = new Node(data);
-	if(!head) 
+	if(head == nullptr) 
 	{
 		head = new_node;
 		tail = new_node;
@@ -119,12 +119,13 @@ void Ring_buf::insert(int data, int index)
 	}
 }
 
-Node* Ring_buf::begin() const { 
-	return head;
+
+Iterator Ring_buf::begin() const { 
+	return Iterator(head); 
 }
 
-Node* Ring_buf::end() const { 
-	return tail;
+Iterator Ring_buf::end() const { 
+	return Iterator(tail); 
 }
 
 
@@ -132,6 +133,7 @@ void Ring_buf::delete_node(int index)
 {
 	Node *node = head->next;
 	Node *buf = head;
+	Node *buf2 = head;
 	if(index < 0)
 	{
 		cout << "The index can't be less than 0, so sorry. \n";
@@ -202,16 +204,16 @@ bool Ring_buf::operator == (const Ring_buf& a) const
 		return false;
 
 
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
 	while (current_buf != end()) 
 	{
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
 
-		if (current_buf->data != a_buf->data) 
+		if (*current_buf != *a_buf) 
 			return false;
 		
+		current_buf++;
+		a_buf++;
 	}
 	return true;
 }
@@ -227,16 +229,18 @@ bool Ring_buf::operator != (const Ring_buf& a)  const
 		return false;
 		
 
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
+
 
 	while (current_buf != end()) 
 	{
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
 
-		if (current_buf->data == a_buf->data) 
+		if (*current_buf == *a_buf) 
 			return true;
+
+		current_buf++;
+		a_buf++;
 		
 	}
 	return false;
@@ -252,16 +256,16 @@ bool Ring_buf::operator < (const Ring_buf& a) const
 		return false;
 		
 
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
-		if (current_buf->data >= a_buf->data)
+		if (*current_buf >= *a_buf)
 			return false;
-
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
+			
+		current_buf++;
+		a_buf++;
 	}
 	return true;
 }
@@ -276,16 +280,16 @@ bool Ring_buf::operator <= (const Ring_buf& a) const
 		return false;
 		
 
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
-		if (current_buf->data > a_buf->data)
+		if (*current_buf > *a_buf)
 			return false;
-		
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
+			
+		current_buf++;
+		a_buf++;
 	}
 	return true;
 }
@@ -300,16 +304,16 @@ bool Ring_buf::operator > (const Ring_buf& a) const
 		return false;
 	
 
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
-		if (current_buf->data <= a_buf->data)
+		if (*current_buf <= *a_buf)
 			return false;
 			
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
+		current_buf++;
+		a_buf++;
 	}
 	return true;
 }
@@ -323,17 +327,16 @@ bool Ring_buf::operator >= (const Ring_buf& a) const
 	if (current_size != a.current_size) 
 		return false;
 		
-
-	Node* current_buf = begin();
-	Node* a_buf = a.begin();
+	Iterator current_buf = begin();
+	Iterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
-		if (current_buf->data < a_buf->data)
+		if (*current_buf != *a_buf)
 			return false;
 			
-		current_buf = current_buf->next;
-		a_buf = a_buf->next;
+		current_buf++;
+		a_buf++;
 	}
 	return true;
 }
@@ -350,3 +353,37 @@ Ring_buf::~Ring_buf()
 	}
 	delete node;		
 }
+
+Iterator::Iterator() { currNode = nullptr; }
+
+Iterator::Iterator(Ring_buf::Node *node) { currNode = node; }
+
+Iterator::Iterator(const Iterator &otherIter) { currNode = otherIter.currNode; }
+
+Iterator &Iterator::operator++() {
+    if (currNode)
+        currNode = currNode->next;
+    return *this;
+}
+
+Iterator Iterator::operator++(int) {
+    Ring_buf::Node *oldNode = currNode;
+    if (currNode)
+        currNode = currNode->next;
+    return oldNode;
+}
+
+Iterator &Iterator::operator=(const Iterator &otherIter) {
+    if (this == &otherIter)
+        return *this;
+    currNode = otherIter.currNode;
+    return *this;
+}
+
+int &Iterator::operator*() const { return currNode->data; }
+
+int Iterator::operator->() const { return currNode->data; }
+
+bool Iterator::operator==(const Iterator &otherIter) const { return currNode == otherIter.currNode; }
+
+bool Iterator::operator!=(const Iterator &otherIter) const { return currNode != otherIter.currNode; }

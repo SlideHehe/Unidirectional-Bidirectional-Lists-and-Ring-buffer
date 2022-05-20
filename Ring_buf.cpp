@@ -1,6 +1,124 @@
 #include "Ring_buf.h"
 
 
+void Ring_buf::list_split(Ring_buf& list_1, Ring_buf& list_2, const int& value)
+{
+	if (this == &list_1 || this == &list_2)
+		cerr << "ERROR";
+	
+	if (&list_1 == &list_2)
+		cerr << "ERROR";
+
+	list_1.clear();
+	list_2.clear();
+
+	for (RingIterator it = begin(); it != end(); ++it)
+		if (*it < value)
+			list_1.push(*it);
+		else
+			list_2.push(*it);
+}
+
+
+
+
+void Ring_buf::quick_sort()
+{
+	if(emptyness()){
+	int size = current_size;
+	int* array_buf = new int[size];
+	int k = 0;
+	RingIterator it = begin();
+	for (; it != end(); ++it)
+		array_buf[k++] = *it;
+
+	array_buf[k] = *it;
+
+	int* array_left = array_buf;
+	int* array_right = array_left + k;
+	quick_sort_array(array_left, array_right);
+	clear();
+	
+
+	for (int i = 0; i < size; i++){
+		push(array_buf[i]);
+	}
+
+	delete[] array_buf;
+}
+}
+
+void Ring_buf::clear()
+{
+	while(current_size != 0)
+		pop();
+}
+
+
+void Ring_buf::quick_sort_array(int* left, int* right)
+{
+	if (right - left <= 1) return;
+
+	int center = *(left + (right - left)/2);
+
+	int* l = left;
+	int* r = right - 1;
+
+	do
+	{
+		while (*l < center)
+			l++;
+
+		while (*r > center)
+			r--;
+
+		if (l <= r){
+			std::swap(*l, *r);
+			l++;
+			r--;
+		}
+	} while (l <= r);
+
+
+
+	if (left < r)
+		quick_sort_array(left, r + 1);
+
+	if (l < right)
+		quick_sort_array(l, right);
+}
+
+
+
+Ring_buf::Ring_buf(const Ring_buf &otherList) {
+    head = tail = nullptr;
+    current_size = 0;
+    max_size = otherList.max_size;
+
+    if (otherList.current_size != 0) {
+        head = new Node(otherList.head->data);
+        current_size++;
+
+        Node *newNode, *currNode = head;
+        Node *currOther = nullptr;
+
+        for (currOther = otherList.head->next; currOther != otherList.tail; currOther = currOther->next) {
+            newNode = new Node(currOther->data);
+            currNode->next = newNode;
+            currNode = currNode->next;
+            current_size++;
+        }
+        newNode = new Node(currOther->data);
+        currNode->next = newNode;
+        currNode = currNode->next;
+        current_size++;
+        tail = currNode;
+        tail->next = head;
+    } else cerr << "\nSo sorry, buffer is empty.\n";
+}
+
+
+
 Ring_buf::Node::Node(int data)
 {
 	this->data = data;
@@ -63,6 +181,18 @@ void Ring_buf::push(int data)
 
 int Ring_buf::pop()
 {
+	if(current_size == 1)
+	{
+		int data = head->data;
+		Node *new_node = head;
+		head = head->next;
+		tail->next = head;
+		current_size--;
+		delete new_node;
+		head = nullptr;
+		tail = nullptr;
+		return data;
+	}
 	if (emptyness())
 	{
 		int data = head->data;
@@ -120,12 +250,12 @@ void Ring_buf::insert(int data, int index)
 }
 
 
-Iterator Ring_buf::begin() const { 
-	return Iterator(head); 
+RingIterator Ring_buf::begin() const { 
+	return RingIterator(head); 
 }
 
-Iterator Ring_buf::end() const { 
-	return Iterator(tail); 
+RingIterator Ring_buf::end() const { 
+	return RingIterator(tail); 
 }
 
 
@@ -204,8 +334,8 @@ bool Ring_buf::operator == (const Ring_buf& a) const
 		return false;
 
 
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 	while (current_buf != end()) 
 	{
 
@@ -229,8 +359,8 @@ bool Ring_buf::operator != (const Ring_buf& a)  const
 		return false;
 		
 
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 
 
 	while (current_buf != end()) 
@@ -256,8 +386,8 @@ bool Ring_buf::operator < (const Ring_buf& a) const
 		return false;
 		
 
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
@@ -280,8 +410,8 @@ bool Ring_buf::operator <= (const Ring_buf& a) const
 		return false;
 		
 
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
@@ -304,8 +434,8 @@ bool Ring_buf::operator > (const Ring_buf& a) const
 		return false;
 	
 
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
@@ -327,8 +457,8 @@ bool Ring_buf::operator >= (const Ring_buf& a) const
 	if (current_size != a.current_size) 
 		return false;
 		
-	Iterator current_buf = begin();
-	Iterator a_buf = a.begin();
+	RingIterator current_buf = begin();
+	RingIterator a_buf = a.begin();
 
 	for ( ; current_buf != end(); )
 	{
@@ -354,36 +484,36 @@ Ring_buf::~Ring_buf()
 	delete node;		
 }
 
-Iterator::Iterator() { currNode = nullptr; }
+RingIterator::RingIterator() { currNode = nullptr; }
 
-Iterator::Iterator(Ring_buf::Node *node) { currNode = node; }
+RingIterator::RingIterator(Ring_buf::Node *node) { currNode = node; }
 
-Iterator::Iterator(const Iterator &otherIter) { currNode = otherIter.currNode; }
+RingIterator::RingIterator(const RingIterator &otherIter) { currNode = otherIter.currNode; }
 
-Iterator &Iterator::operator++() {
+RingIterator &RingIterator::operator++() {
     if (currNode)
         currNode = currNode->next;
     return *this;
 }
 
-Iterator Iterator::operator++(int) {
+RingIterator RingIterator::operator++(int) {
     Ring_buf::Node *oldNode = currNode;
     if (currNode)
         currNode = currNode->next;
     return oldNode;
 }
 
-Iterator &Iterator::operator=(const Iterator &otherIter) {
+RingIterator &RingIterator::operator=(const RingIterator &otherIter) {
     if (this == &otherIter)
         return *this;
     currNode = otherIter.currNode;
     return *this;
 }
 
-int &Iterator::operator*() const { return currNode->data; }
+int &RingIterator::operator*() const { return currNode->data; }
 
-int Iterator::operator->() const { return currNode->data; }
+int RingIterator::operator->() const { return currNode->data; }
 
-bool Iterator::operator==(const Iterator &otherIter) const { return currNode == otherIter.currNode; }
+bool RingIterator::operator==(const RingIterator &otherIter) const { return currNode == otherIter.currNode; }
 
-bool Iterator::operator!=(const Iterator &otherIter) const { return currNode != otherIter.currNode; }
+bool RingIterator::operator!=(const RingIterator &otherIter) const { return currNode != otherIter.currNode; }

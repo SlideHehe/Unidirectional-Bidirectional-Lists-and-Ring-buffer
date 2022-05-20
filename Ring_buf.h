@@ -7,7 +7,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-class Iterator;
+class RingIterator;
 
 class Ring_buf 
 {
@@ -29,20 +29,31 @@ private:
 	bool emptyness();
 
 	bool overflow();
+
+	void quick_sort_array(int* , int*);
+
 public:
-	friend class Iterator;
+	friend class RingIterator;
 
 	Ring_buf(int );
 
+	Ring_buf(const Ring_buf &);
+
+	void quick_sort();
+
+	void list_split(Ring_buf&, Ring_buf&, const int&);
+
 	void push(int );
+
+	void clear();
 
 	int pop();
 
 	void insert(int , int );
 
-	Iterator begin() const;
+	RingIterator begin() const;
 
-	Iterator end() const;
+	RingIterator end() const;
 
 
 	void delete_node(int );
@@ -69,29 +80,29 @@ public:
 
 };
 
-class Iterator {
+class RingIterator {
 public:
     friend struct Ring_buf::Node;
 
-    Iterator();
+    RingIterator();
 
-    Iterator(Ring_buf::Node*);
+    RingIterator(Ring_buf::Node*);
 
-    Iterator(const Iterator&);
+    RingIterator(const RingIterator&);
 
-    Iterator &operator++();
+    RingIterator &operator++();
 
-    Iterator operator++(int);
+    RingIterator operator++(int);
 
-    Iterator &operator=(const Iterator&);
+    RingIterator &operator=(const RingIterator&);
 
     int &operator*() const;
 
     int operator->() const;
 
-    bool operator==(const Iterator&) const;
+    bool operator==(const RingIterator&) const;
 
-    bool operator!=(const Iterator&) const;
+    bool operator!=(const RingIterator&) const;
 
 private:
     Ring_buf::Node *currNode;

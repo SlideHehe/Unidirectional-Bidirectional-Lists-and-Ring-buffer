@@ -74,15 +74,11 @@ void BDList::insert(int data, int position) {
             head->prev = newNode;
             head = newNode;
 
-            count++;
-
         } else if (position == count) {
             newNode->next = nullptr;
             newNode->prev = tail;
             tail->next = newNode;
             tail = newNode;
-
-            count++;
 
         } else if (position > 0 && position <= count / 2) {
             int currPos = 0;
@@ -97,7 +93,6 @@ void BDList::insert(int data, int position) {
                 newNode->next = currNode;
             }
 
-            count++;
         } else if (position < count - 1 && position > count / 2) {
             int currPos = count - 1;
             Node *currNode;
@@ -110,9 +105,10 @@ void BDList::insert(int data, int position) {
                 currNode->prev = newNode;
                 newNode->next = currNode;
             }
-
-            count++;
         }
+
+        count++;
+
     } else cerr << "Such position doesn't exist";
 }
 
@@ -128,8 +124,10 @@ int BDList::pop() {
             tail->next = nullptr;
         }
 
+        int ret = tmp->data;
         delete tmp;
         count--;
+        return ret;
 
     } else cerr << "List is empty";
 }
@@ -148,9 +146,6 @@ int BDList::erase(int position) {
                 head->prev = nullptr;
             }
 
-            delete tmp;
-            count--;
-
         } else if (position == count - 1) {
             tmp = tail;
 
@@ -162,8 +157,6 @@ int BDList::erase(int position) {
                 tail->next = nullptr;
             }
 
-            delete tmp;
-            count--;
         } else if (position > 0 && position <= count / 2) {
             int currPos = 0;
 
@@ -172,10 +165,8 @@ int BDList::erase(int position) {
             if (currPos == position) {
                 tmp->next->prev = tmp->prev;
                 tmp->prev->next = tmp->next;
-                delete tmp;
             }
 
-            count--;
         } else if (position < count - 1 && position > count / 2) {
             int currPos = count - 1;
 
@@ -184,11 +175,14 @@ int BDList::erase(int position) {
             if (currPos == position) {
                 tmp->next->prev = tmp->prev;
                 tmp->prev->next = tmp->next;
-                delete tmp;
             }
-
-            count--;
         } else cerr << "Such position doesn't exist";
+
+        int ret = tmp->data;
+        delete tmp;
+        count--;
+        return ret;
+
     } else cerr << "List is empty";
 }
 

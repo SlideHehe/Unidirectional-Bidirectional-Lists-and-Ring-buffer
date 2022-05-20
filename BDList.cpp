@@ -205,6 +205,33 @@ void BDList::delAll() {
     count = 0;
 }
 
+BDList BDList::split(int value) {
+    if (count > 0) {
+        BDList newList;
+        Node *currNode = head;
+        int position = 0;
+
+        while (currNode != nullptr) {
+            if (currNode->data < value) {
+                newList.push(currNode->data);
+                currNode = currNode->next;
+                erase(position);
+            } else {
+                position++;
+                currNode = currNode->next;
+            }
+        }
+
+        return newList;
+    } else cerr << "Source list is empty";
+}
+
+void BDList::quickSort() {
+    if (count > 0) {
+        _quickSort(head, tail);
+    } else cerr << "List is empty";
+}
+
 BDListIterator BDList::begin() const { return BDListIterator(head); }
 
 BDListIterator BDList::end() const { return BDListIterator(tail); }
@@ -250,6 +277,31 @@ bool BDList::operator>=(const BDList &otherList) const { return (count >= otherL
 bool BDList::operator<(const BDList &otherList) const { return (count < otherList.count); }
 
 bool BDList::operator<=(const BDList &otherList) const { return (count <= otherList.count); }
+
+BDList::Node *BDList::partition(Node *left, Node *right) {
+    Node *i = left->prev;
+
+    for (Node *j = left; j != right; j = j->next) {
+        if (j->data <= right->data) {
+            i = (i == nullptr) ? left : i->next;
+            std::swap(i->data, j->data);
+        }
+    }
+
+    i = (i == nullptr) ? left : i->next;
+    std::swap(i->data, right->data);
+
+    return i;
+}
+
+void BDList::_quickSort(Node *left, Node *right) {
+    if (right != nullptr && left != right && left != right->next) {
+        Node *p = partition(left, right);
+
+        _quickSort(left, p->prev);
+        _quickSort(p->next, right);
+    }
+}
 
 BDListIterator::BDListIterator() { currNode = nullptr; }
 

@@ -38,6 +38,10 @@ public:
 
     void delAll();
 
+    BDList split(int value);
+
+    void quickSort();
+
     BDListIterator begin() const;
 
     BDListIterator end() const;
@@ -63,6 +67,10 @@ public:
 private:
     Node *head, *tail;
     int count;
+
+    Node *partition(Node *left, Node *right);
+
+    void _quickSort(Node *left, Node *right);
 };
 
 class BDListIterator {

@@ -5,7 +5,7 @@ BDList::BDList() {
     count = 0;
 }
 
-BDList::BDList(const BDList &otherList) {
+BDList::BDList(const BDList& otherList) {
     head = tail = nullptr;
     count = 0;
 
@@ -14,9 +14,9 @@ BDList::BDList(const BDList &otherList) {
         head->data = otherList.head->data;
         count++;
 
-        Node *newNode, *currNode = head;
+        Node* newNode, * currNode = head;
 
-        for (Node *currOther = otherList.head->next; currOther != nullptr; currOther = currOther->next) {
+        for (Node* currOther = otherList.head->next; currOther != nullptr; currOther = currOther->next) {
             newNode = new Node();
             newNode->data = currOther->data;
             currNode->next = newNode;
@@ -26,26 +26,29 @@ BDList::BDList(const BDList &otherList) {
         }
         tail = currNode;
         tail->next = nullptr;
-    } else cerr << "List is empty";
+    }
+    else cerr << "List is empty";
 }
 
 BDList::~BDList() { delAll(); }
 
 void BDList::print() {
     if (count > 0) {
-        Node *currNode = head;
+        Node* currNode = head;
         int i = 0;
 
         while (currNode != nullptr) {
-            cout << i++ << ") " << currNode->data << endl;
+            cout << i+1 << ")" << currNode->data << " ";
+            i++;
             currNode = currNode->next;
         }
-
-    } else cerr << "List is empty";
+        cout << endl;
+    }
+    else cerr << "List is empty";
 }
 
 void BDList::pushBegin(int data) {
-    Node *newNode = new Node();
+    Node* newNode = new Node();
     newNode->data = data;
     newNode->prev = nullptr;
 
@@ -53,7 +56,8 @@ void BDList::pushBegin(int data) {
         head = newNode;
         head->next = nullptr;
         tail = head;
-    } else {
+    }
+    else {
         head->prev = newNode;
         newNode->next = head;
     }
@@ -64,7 +68,7 @@ void BDList::pushBegin(int data) {
 }
 
 void BDList::pushEnd(int data) {
-    Node *newNode = new Node();
+    Node* newNode = new Node();
     newNode->data = data;
     newNode->next = nullptr;
 
@@ -72,7 +76,8 @@ void BDList::pushEnd(int data) {
         head = newNode;
         head->prev = nullptr;
         tail = head;
-    } else {
+    }
+    else {
         tail->next = newNode;
         newNode->prev = tail;
     }
@@ -84,14 +89,14 @@ void BDList::pushEnd(int data) {
 
 void BDList::insert(int data, int position) {
     if (position <= count) {
-        Node *newNode = new Node();
+        Node* newNode = new Node();
         newNode->data = data;
 
         if (position == 0) pushBegin(data);
         else if (position == count) pushEnd(data);
         else if (position > 0 && position <= count / 2) {
             int currPos = 0;
-            Node *currNode;
+            Node* currNode;
 
             for (currNode = head; currNode != nullptr && currPos != position; currNode = currNode->next, currPos++);
 
@@ -104,9 +109,10 @@ void BDList::insert(int data, int position) {
 
             count++;
 
-        } else if (position < count - 1 && position > count / 2) {
+        }
+        else if (position < count - 1 && position > count / 2) {
             int currPos = count - 1;
-            Node *currNode;
+            Node* currNode;
 
             for (currNode = tail; currNode != nullptr && currPos != position; currNode = currNode->prev, currPos--);
 
@@ -120,12 +126,13 @@ void BDList::insert(int data, int position) {
             count++;
         }
 
-    } else cerr << "Such position doesn't exist";
+    }
+    else cerr << "Such position doesn't exist";
 }
 
 int BDList::popBegin() {
     if (count > 0) {
-        Node *tmp = head;
+        Node* tmp = head;
 
         if (head == tail)
             head = tail = nullptr;
@@ -140,12 +147,13 @@ int BDList::popBegin() {
         count--;
         return ret;
 
-    } else cerr << "List is empty";
+    }
+    else cerr << "List is empty";
 }
 
 int BDList::popEnd() {
     if (count > 0) {
-        Node *tmp = tail;
+        Node* tmp = tail;
 
         if (head == tail)
             head = tail = nullptr;
@@ -160,7 +168,8 @@ int BDList::popEnd() {
         count--;
         return ret;
 
-    } else cerr << "List is empty";
+    }
+    else cerr << "List is empty";
 }
 
 int BDList::erase(int position) {
@@ -168,7 +177,7 @@ int BDList::erase(int position) {
         if (position == 0) popBegin();
         else if (position == count - 1) popEnd();
         else if (position > 0 && position <= count / 2) {
-            Node *tmp;
+            Node* tmp;
             int currPos = 0;
 
             for (tmp = head; tmp != nullptr && currPos != position; tmp = tmp->next, currPos++);
@@ -183,8 +192,9 @@ int BDList::erase(int position) {
             count--;
             return ret;
 
-        } else if (position < count - 1 && position > count / 2) {
-            Node *tmp;
+        }
+        else if (position < count - 1 && position > count / 2) {
+            Node* tmp;
             int currPos = count - 1;
 
             for (tmp = tail; tmp != nullptr && currPos != position; tmp = tmp->prev, currPos--);
@@ -199,13 +209,15 @@ int BDList::erase(int position) {
             count--;
             return ret;
 
-        } else cerr << "Such position doesn't exist";
+        }
+        else cerr << "Such position doesn't exist";
 
-    } else cerr << "List is empty";
+    }
+    else cerr << "List is empty";
 }
 
 void BDList::delAll() {
-    Node *tmp;
+    Node* tmp;
 
     while (head != nullptr) {
         tmp = head;
@@ -220,7 +232,7 @@ void BDList::delAll() {
 BDList BDList::split(int value) {
     if (count > 0) {
         BDList newList;
-        Node *currNode = head;
+        Node* currNode = head;
         int position = 0;
 
         while (currNode != nullptr) {
@@ -228,20 +240,23 @@ BDList BDList::split(int value) {
                 newList.pushEnd(currNode->data);
                 currNode = currNode->next;
                 erase(position);
-            } else {
+            }
+            else {
                 position++;
                 currNode = currNode->next;
             }
         }
 
         return newList;
-    } else cerr << "Source list is empty";
+    }
+    else cerr << "Source list is empty";
 }
 
 void BDList::quickSort() {
     if (count > 0) {
         _quickSort(head, tail);
-    } else cerr << "List is empty";
+    }
+    else cerr << "List is empty";
 }
 
 BDListIterator BDList::begin() const { return BDListIterator(head); }
@@ -250,7 +265,7 @@ BDListIterator BDList::end() const { return BDListIterator(tail); }
 
 int BDList::getByHead(int position) const {
     if (count > 0 && position < count && position >= 0) {
-        Node *tmp;
+        Node* tmp;
         int currPos = 0;
 
         for (tmp = head; tmp != nullptr && currPos != position; tmp = tmp->next, currPos++);
@@ -264,7 +279,7 @@ int BDList::getByHead(int position) const {
 
 int BDList::getByTail(int position) const {
     if (count > 0 && position < count && position >= 0) {
-        Node *tmp;
+        Node* tmp;
         int currPos = 0;
 
         for (tmp = tail; tmp != nullptr && currPos != position; tmp = tmp->prev, currPos++);
@@ -278,22 +293,22 @@ int BDList::getByTail(int position) const {
 
 int BDList::getCount() const { return count; }
 
-bool BDList::operator==(const BDList &otherList) const { return (count == otherList.count); }
+bool BDList::operator==(const BDList& otherList) const { return (count == otherList.count); }
 
-bool BDList::operator!=(const BDList &otherList) const { return (count != otherList.count); }
+bool BDList::operator!=(const BDList& otherList) const { return (count != otherList.count); }
 
-bool BDList::operator>(const BDList &otherList) const { return (count > otherList.count); }
+bool BDList::operator>(const BDList& otherList) const { return (count > otherList.count); }
 
-bool BDList::operator>=(const BDList &otherList) const { return (count >= otherList.count); }
+bool BDList::operator>=(const BDList& otherList) const { return (count >= otherList.count); }
 
-bool BDList::operator<(const BDList &otherList) const { return (count < otherList.count); }
+bool BDList::operator<(const BDList& otherList) const { return (count < otherList.count); }
 
-bool BDList::operator<=(const BDList &otherList) const { return (count <= otherList.count); }
+bool BDList::operator<=(const BDList& otherList) const { return (count <= otherList.count); }
 
-BDList::Node *BDList::partition(Node *left, Node *right) {
-    Node *pointer = left->prev;
+BDList::Node* BDList::partition(Node* left, Node* right) {
+    Node* pointer = left->prev;
 
-    for (Node *i = left; i != right; i = i->next) {
+    for (Node* i = left; i != right; i = i->next) {
         if (i->data <= right->data) {
             pointer = (pointer == nullptr) ? left : pointer->next;
             std::swap(pointer->data, i->data);
@@ -306,9 +321,9 @@ BDList::Node *BDList::partition(Node *left, Node *right) {
     return pointer;
 }
 
-void BDList::_quickSort(Node *left, Node *right) {
+void BDList::_quickSort(Node* left, Node* right) {
     if (right != nullptr && left != right && left != right->next) {
-        Node *pointer = partition(left, right);
+        Node* pointer = partition(left, right);
 
         _quickSort(left, pointer->prev);
         _quickSort(pointer->next, right);
@@ -317,50 +332,50 @@ void BDList::_quickSort(Node *left, Node *right) {
 
 BDListIterator::BDListIterator() { currNode = nullptr; }
 
-BDListIterator::BDListIterator(BDList::Node *node) { currNode = node; }
+BDListIterator::BDListIterator(BDList::Node* node) { currNode = node; }
 
-BDListIterator::BDListIterator(const BDListIterator &otherIter) { currNode = otherIter.currNode; }
+BDListIterator::BDListIterator(const BDListIterator& otherIter) { currNode = otherIter.currNode; }
 
-BDListIterator &BDListIterator::operator++() {
+BDListIterator& BDListIterator::operator++() {
     if (currNode)
         currNode = currNode->next;
     return *this;
 }
 
 BDListIterator BDListIterator::operator++(int) {
-    BDList::Node *oldNode = currNode;
+    BDList::Node* oldNode = currNode;
     if (currNode)
         currNode = currNode->next;
     return oldNode;
 }
 
-BDListIterator &BDListIterator::operator--() {
+BDListIterator& BDListIterator::operator--() {
     if (currNode)
         currNode = currNode->prev;
     return *this;
 }
 
 BDListIterator BDListIterator::operator--(int) {
-    BDList::Node *oldNode = currNode;
+    BDList::Node* oldNode = currNode;
     if (currNode)
         currNode = currNode->prev;
     return oldNode;
 }
 
-BDListIterator &BDListIterator::operator=(const BDListIterator &otherIter) {
+BDListIterator& BDListIterator::operator=(const BDListIterator& otherIter) {
     if (this == &otherIter)
         return *this;
     currNode = otherIter.currNode;
     return *this;
 }
 
-int &BDListIterator::operator*() const { return currNode->data; }
+int& BDListIterator::operator*() const { return currNode->data; }
 
 int BDListIterator::operator->() const { return currNode->data; }
 
-bool BDListIterator::operator==(const BDListIterator &otherIter) const { return currNode == otherIter.currNode; }
+bool BDListIterator::operator==(const BDListIterator& otherIter) const { return currNode == otherIter.currNode; }
 
-bool BDListIterator::operator!=(const BDListIterator &otherIter) const { return currNode != otherIter.currNode; }
+bool BDListIterator::operator!=(const BDListIterator& otherIter) const { return currNode != otherIter.currNode; }
 
 BDList::Node::Node() {
     prev = next = nullptr;

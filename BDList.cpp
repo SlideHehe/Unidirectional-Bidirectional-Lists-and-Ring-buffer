@@ -44,7 +44,26 @@ void BDList::print() {
     } else cerr << "List is empty";
 }
 
-void BDList::push(int data) {
+void BDList::pushBegin(int data) {
+    Node *newNode = new Node();
+    newNode->data = data;
+    newNode->prev = nullptr;
+
+    if (!head) {
+        head = newNode;
+        head->next = nullptr;
+        tail = head;
+    } else {
+        head->prev = newNode;
+        newNode->next = head;
+    }
+
+    head = newNode;
+    count++;
+
+}
+
+void BDList::pushEnd(int data) {
     Node *newNode = new Node();
     newNode->data = data;
     newNode->next = nullptr;
@@ -68,19 +87,9 @@ void BDList::insert(int data, int position) {
         Node *newNode = new Node();
         newNode->data = data;
 
-        if (position == 0) {
-            newNode->prev = nullptr;
-            newNode->next = head;
-            head->prev = newNode;
-            head = newNode;
-
-        } else if (position == count) {
-            newNode->next = nullptr;
-            newNode->prev = tail;
-            tail->next = newNode;
-            tail = newNode;
-
-        } else if (position > 0 && position <= count / 2) {
+        if (position == 0) pushBegin(data);
+        else if (position == count) pushEnd(data);
+        else if (position > 0 && position <= count / 2) {
             int currPos = 0;
             Node *currNode;
 
@@ -92,6 +101,8 @@ void BDList::insert(int data, int position) {
                 currNode->prev = newNode;
                 newNode->next = currNode;
             }
+
+            count++;
 
         } else if (position < count - 1 && position > count / 2) {
             int currPos = count - 1;
@@ -105,14 +116,34 @@ void BDList::insert(int data, int position) {
                 currNode->prev = newNode;
                 newNode->next = currNode;
             }
-        }
 
-        count++;
+            count++;
+        }
 
     } else cerr << "Such position doesn't exist";
 }
 
-int BDList::pop() {
+int BDList::popBegin() {
+    if (count > 0) {
+        Node *tmp = head;
+
+        if (head == tail)
+            head = tail = nullptr;
+        else {
+            if (head->next)
+                head = head->next;
+            head->prev = nullptr;
+        }
+
+        int ret = tmp->data;
+        delete tmp;
+        count--;
+        return ret;
+
+    } else cerr << "List is empty";
+}
+
+int BDList::popEnd() {
     if (count > 0) {
         Node *tmp = tail;
 
@@ -134,30 +165,10 @@ int BDList::pop() {
 
 int BDList::erase(int position) {
     if (count > 0) {
-        Node *tmp;
-
-        if (position == 0) {
-            tmp = head;
-            if (head == tail)
-                head = tail = nullptr;
-            else {
-                if (head->next)
-                    head = head->next;
-                head->prev = nullptr;
-            }
-
-        } else if (position == count - 1) {
-            tmp = tail;
-
-            if (head == tail)
-                head = tail = nullptr;
-            else {
-                if (tail->prev)
-                    tail = tail->prev;
-                tail->next = nullptr;
-            }
-
-        } else if (position > 0 && position <= count / 2) {
+        if (position == 0) popBegin();
+        else if (position == count - 1) popEnd();
+        else if (position > 0 && position <= count / 2) {
+            Node *tmp;
             int currPos = 0;
 
             for (tmp = head; tmp != nullptr && currPos != position; tmp = tmp->next, currPos++);
@@ -167,7 +178,13 @@ int BDList::erase(int position) {
                 tmp->prev->next = tmp->next;
             }
 
+            int ret = tmp->data;
+            delete tmp;
+            count--;
+            return ret;
+
         } else if (position < count - 1 && position > count / 2) {
+            Node *tmp;
             int currPos = count - 1;
 
             for (tmp = tail; tmp != nullptr && currPos != position; tmp = tmp->prev, currPos--);
@@ -176,12 +193,13 @@ int BDList::erase(int position) {
                 tmp->next->prev = tmp->prev;
                 tmp->prev->next = tmp->next;
             }
-        } else cerr << "Such position doesn't exist";
 
-        int ret = tmp->data;
-        delete tmp;
-        count--;
-        return ret;
+            int ret = tmp->data;
+            delete tmp;
+            count--;
+            return ret;
+
+        } else cerr << "Such position doesn't exist";
 
     } else cerr << "List is empty";
 }
@@ -207,7 +225,7 @@ BDList BDList::split(int value) {
 
         while (currNode != nullptr) {
             if (currNode->data < value) {
-                newList.push(currNode->data);
+                newList.pushEnd(currNode->data);
                 currNode = currNode->next;
                 erase(position);
             } else {
@@ -273,27 +291,27 @@ bool BDList::operator<(const BDList &otherList) const { return (count < otherLis
 bool BDList::operator<=(const BDList &otherList) const { return (count <= otherList.count); }
 
 BDList::Node *BDList::partition(Node *left, Node *right) {
-    Node *i = left->prev;
+    Node *pointer = left->prev;
 
-    for (Node *j = left; j != right; j = j->next) {
-        if (j->data <= right->data) {
-            i = (i == nullptr) ? left : i->next;
-            std::swap(i->data, j->data);
+    for (Node *i = left; i != right; i = i->next) {
+        if (i->data <= right->data) {
+            pointer = (pointer == nullptr) ? left : pointer->next;
+            std::swap(pointer->data, i->data);
         }
     }
 
-    i = (i == nullptr) ? left : i->next;
-    std::swap(i->data, right->data);
+    pointer = (pointer == nullptr) ? left : pointer->next;
+    std::swap(pointer->data, right->data);
 
-    return i;
+    return pointer;
 }
 
 void BDList::_quickSort(Node *left, Node *right) {
     if (right != nullptr && left != right && left != right->next) {
-        Node *p = partition(left, right);
+        Node *pointer = partition(left, right);
 
-        _quickSort(left, p->prev);
-        _quickSort(p->next, right);
+        _quickSort(left, pointer->prev);
+        _quickSort(pointer->next, right);
     }
 }
 

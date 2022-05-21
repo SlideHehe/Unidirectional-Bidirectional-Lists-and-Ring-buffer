@@ -3,7 +3,7 @@
 void bdListTest() {
     BDList testBDList;
     for (int i = 0; i < 15; i++)
-        testBDList.push(14 - i);
+        testBDList.pushEnd(14 - i);
     cout << "Source list:\n";
     testBDList.print();
     cout << "Count: " << testBDList.getCount() << endl;
@@ -28,7 +28,7 @@ void bdListTest() {
     cout << "Current node: " << *testBDListIterator << endl;
 
     for (int i = 0; i < 5; i++)
-        testBDList.pop();
+        testBDList.popEnd();
     testBDList.print();
     cout << "Count: " << testBDList.getCount() << endl;
 
@@ -40,7 +40,7 @@ void bdListTest() {
     cout << "Get by tail by 3: " << testBDList.getByTail(3) << endl;
 
     BDList testSplit = testBDList.split(7);
-    cout << "Split lists\n First:\n";
+    cout << "Split lists\nFirst:\n";
     testBDList.print();
     cout << "Second:\n";
     testSplit.print();

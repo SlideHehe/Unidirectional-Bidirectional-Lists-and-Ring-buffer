@@ -28,11 +28,15 @@ public:
 
     void print();
 
-    void push(int data);
+    void pushBegin(int data);
+
+    void pushEnd(int data);
 
     void insert(int data, int position);
 
-    int pop();
+    int popBegin();
+
+    int popEnd();
 
     int erase(int position);
 

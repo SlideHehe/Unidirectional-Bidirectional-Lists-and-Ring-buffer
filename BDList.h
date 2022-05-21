@@ -14,7 +14,7 @@ class BDList {
         Node();
 
         int data;
-        Node* next, * prev;
+        Node *next, *prev;
     };
 
 public:
@@ -22,7 +22,7 @@ public:
 
     BDList();
 
-    BDList(const BDList& otherList);
+    BDList(const BDList &otherList);
 
     ~BDList();
 
@@ -56,25 +56,25 @@ public:
 
     int getCount() const;
 
-    bool operator==(const BDList& otherList) const;
+    bool operator==(const BDList &otherList) const;
 
-    bool operator!=(const BDList& otherList) const;
+    bool operator!=(const BDList &otherList) const;
 
-    bool operator>(const BDList& otherList) const;
+    bool operator>(const BDList &otherList) const;
 
-    bool operator>=(const BDList& otherList) const;
+    bool operator>=(const BDList &otherList) const;
 
-    bool operator<(const BDList& otherList) const;
+    bool operator<(const BDList &otherList) const;
 
-    bool operator<=(const BDList& otherList) const;
+    bool operator<=(const BDList &otherList) const;
 
 private:
-    Node* head, * tail;
+    Node *head, *tail;
     int count;
 
-    Node* partition(Node* left, Node* right);
+    Node *partition(Node *left, Node *right);
 
-    void _quickSort(Node* left, Node* right);
+    void _quickSort(Node *left, Node *right);
 };
 
 class BDListIterator {
@@ -83,30 +83,30 @@ public:
 
     BDListIterator();
 
-    BDListIterator(BDList::Node* node);
+    BDListIterator(BDList::Node *node);
 
-    BDListIterator(const BDListIterator& otherIter);
+    BDListIterator(const BDListIterator &otherIter);
 
-    BDListIterator& operator++();
+    BDListIterator &operator++();
 
     BDListIterator operator++(int);
 
-    BDListIterator& operator--();
+    BDListIterator &operator--();
 
     BDListIterator operator--(int);
 
-    BDListIterator& operator=(const BDListIterator& otherIter);
+    BDListIterator &operator=(const BDListIterator &otherIter);
 
-    int& operator*() const;
+    int &operator*() const;
 
     int operator->() const;
 
-    bool operator==(const BDListIterator& otherIter) const;
+    bool operator==(const BDListIterator &otherIter) const;
 
-    bool operator!=(const BDListIterator& otherIter) const;
+    bool operator!=(const BDListIterator &otherIter) const;
 
 private:
-    BDList::Node* currNode;
+    BDList::Node *currNode;
 };
 
 #endif //BIDIRECTIONAL_LIST_H

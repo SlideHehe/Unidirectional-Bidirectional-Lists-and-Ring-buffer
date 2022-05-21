@@ -353,7 +353,7 @@ void Ring_buf::show()
 		Node* node = head;
 		for (int i = 1; i <= current_size; i++)
 		{
-			cout << i<< ")" << node->data << " ";
+			cout << i<< ") " << node->data << " ";
 			node = node->next;
 		}
 		cout << endl;

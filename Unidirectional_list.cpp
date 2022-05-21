@@ -36,7 +36,7 @@ void Unidirectional_list::print() {
         Node* currNode = head;
 
         for (int i = 1; i <= count; i++) {
-            cout << i << ")" << currNode->data << " ";
+            cout << i << ") " << currNode->data << " ";
             currNode = currNode->next;
         }
         cout << endl;

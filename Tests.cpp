@@ -151,7 +151,7 @@ void Unidirectional_list_test() {
     Iter++;
     cout << "Current node: " << *Iter << endl;*/
 
-    
+
 
     for (int i = 0; i < 5; i++)
         cout<<testlist.pop()<<" ";
@@ -162,14 +162,14 @@ void Unidirectional_list_test() {
     testlist.erase(3);
     testlist.print();
     cout << "Count: " << testlist.getCount() << endl;
-  
+
     Unidirectional_list testSplit = testlist.Div_list(50);
-    cout << "Current lists:\n First:\n";
+    cout << "Current lists:\nFirst:\n";
     testlist.print();
-    cout << " Second:\n";
+    cout << "Second:\n";
     testSplit.print();
 
-    cout<<(testlist != testSplit);
+    cout << (testlist != testSplit);
 }
 
 
@@ -295,9 +295,9 @@ void Ring_buf_test() {
 
     Ring_buf test1(15), test2(15);
     testbuf.list_split(test1, test2, 60);
-    cout << "Current lists:\n First:\n";
+    cout << "Current lists:\nFirst:\n";
     test1.show();
-    cout << " Second:\n";
+    cout << "Second:\n";
     test2.show();
 
     cout << (test1 != test2);

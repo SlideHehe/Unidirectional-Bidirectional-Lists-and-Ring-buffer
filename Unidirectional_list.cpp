@@ -36,7 +36,7 @@ void Unidirectional_list::print() {
         Node* currNode = head;
 
         for (int i = 1; i <= count; i++) {
-            cout << i << ") " << currNode->data << endl;
+            cout << i << ")" << currNode->data << " ";
             currNode = currNode->next;
         }
         cout << endl;
@@ -137,9 +137,11 @@ int Unidirectional_list::erase(int position) {
     if (count > 0) {
         if(count >= position && position > 0) {
             Node* lastdelNode = head;
-            
+            int d;
+
             if (position == 1) {
                 head = lastdelNode->next;
+                d = head->data;
                 delete lastdelNode;
             }
             else {
@@ -148,11 +150,13 @@ int Unidirectional_list::erase(int position) {
                 }
                 Node* delNode = lastdelNode->next;
                 lastdelNode->next = delNode->next;
+                d = delNode->data;
                 delete delNode;
             }
             count--;
+            return d;
         }
-        else cerr << "Such position doesn't exist\n";
+        else cerr << "Such position doesn't exist\n"; return 0;
     }
     else cerr << "List is empty\n"; return 0;
 }

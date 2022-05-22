@@ -124,6 +124,8 @@ void BDList::insert(int data, int position) {
 }
 
 int BDList::popBegin() {
+    int ret = 0;
+
     if (count > 0) {
         Node *tmp = head;
 
@@ -135,15 +137,19 @@ int BDList::popBegin() {
             head->prev = nullptr;
         }
 
-        int ret = tmp->data;
+        ret = tmp->data;
         delete tmp;
         count--;
         return ret;
 
     } else cerr << "List is empty";
+
+    return ret;
 }
 
 int BDList::popEnd() {
+    int ret = 0;
+
     if (count > 0) {
         Node *tmp = tail;
 
@@ -155,18 +161,21 @@ int BDList::popEnd() {
             tail->next = nullptr;
         }
 
-        int ret = tmp->data;
+        ret = tmp->data;
         delete tmp;
         count--;
-        return ret;
 
     } else cerr << "List is empty";
+
+    return ret;
 }
 
 int BDList::erase(int position) {
+    int ret = 0;
+
     if (count > 0) {
-        if (position == 0) popBegin();
-        else if (position == count - 1) popEnd();
+        if (position == 0) ret = popBegin();
+        else if (position == count - 1) ret = popEnd();
         else if (position > 0 && position <= count / 2) {
             Node *tmp;
             int currPos = 0;
@@ -178,10 +187,9 @@ int BDList::erase(int position) {
                 tmp->prev->next = tmp->next;
             }
 
-            int ret = tmp->data;
+            ret = tmp->data;
             delete tmp;
             count--;
-            return ret;
 
         } else if (position < count - 1 && position > count / 2) {
             Node *tmp;
@@ -194,14 +202,14 @@ int BDList::erase(int position) {
                 tmp->prev->next = tmp->next;
             }
 
-            int ret = tmp->data;
+            ret = tmp->data;
             delete tmp;
             count--;
-            return ret;
 
         } else cerr << "Such position doesn't exist";
-
     } else cerr << "List is empty";
+
+    return ret;
 }
 
 void BDList::delAll() {
